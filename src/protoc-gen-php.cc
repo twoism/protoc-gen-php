@@ -47,6 +47,7 @@
 #include <google/protobuf/io/zero_copy_stream.h>
 
 using std::string;
+using namespace std;
 
 using namespace google::protobuf;
 using namespace google::protobuf::compiler;
@@ -71,6 +72,8 @@ bool PHPCodeGenerator::Generate(const FileDescriptor* file,
   assert(file != NULL);
   assert(context != NULL);
 
+  set<string> generated_files;
+
   string php_filename = FileDescriptorToPath(*file);
   cerr << "Generating " << php_filename << endl;
 
@@ -85,8 +88,11 @@ bool PHPCodeGenerator::Generate(const FileDescriptor* file,
   main.Generate(error);
 
   for (int i = 0; i < file->dependency_count(); i++) {
-    // TODO Check if we have processed this file already (due to imports), and
-    // if so skip
+    if (generated_files.find(file->name()) == generated_files.end()) {
+      continue;
+    }
+
+    generated_files.insert(file->name());
     // TODO Keep track of this in the PHPCodeGenerator
     if (!Generate(file->dependency(i), parameter, context, error)) {
       return false;
