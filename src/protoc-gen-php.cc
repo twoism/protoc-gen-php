@@ -88,7 +88,7 @@ bool PHPCodeGenerator::Generate(const FileDescriptor* file,
   main.Generate(error);
 
   for (int i = 0; i < file->dependency_count(); i++) {
-    if (generated_files.find(file->name()) == generated_files.end()) {
+    if (generated_files.find(file->name()) != generated_files.end()) {
       continue;
     }
 
